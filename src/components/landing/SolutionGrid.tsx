@@ -137,6 +137,9 @@ export const SolutionGrid = () => {
               <Gauge className="h-3.5 w-3.5 text-primary" />
               Built on modern cloud infrastructure designed for scalability and performance.
             </p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Currently onboarding early teams and scaling infrastructure to support increasing workloads.
+            </p>
           </div>
           <div className="flex md:justify-end">
             <Button
