@@ -41,6 +41,13 @@ export const Hero = () => {
             <Button size="lg" variant="outline" className="border-border bg-card/50">
               Book a Demo
             </Button>
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
+              Limited early access available
+            </div>
           </div>
 
           <div className="mt-7 flex items-center gap-3">
@@ -59,7 +66,9 @@ export const Hero = () => {
             </div>
             <div className="text-sm leading-tight">
               <div className="font-medium">Join 120+ early teams</div>
-              <div className="text-muted-foreground">exploring Necub</div>
+              <div className="text-muted-foreground">
+                Usage is growing as more teams adopt Necub for data processing and automation.
+              </div>
             </div>
           </div>
 
