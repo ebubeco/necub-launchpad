@@ -1,6 +1,8 @@
 import { ArrowRight, Boxes, Layers, Cloud, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DashboardMock } from "./DashboardMock";
+import { EarlyAccessForm } from "./EarlyAccessForm";
 import heroCloud from "@/assets/hero-cloud.png";
 
 const credibility = [
@@ -33,13 +35,16 @@ export const Hero = () => {
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Button
+              asChild
               size="lg"
               className="bg-gradient-to-r from-primary to-primary-glow text-white shadow-[0_0_32px_-8px_hsl(var(--primary)/0.6)] hover:opacity-95"
             >
-              Join Early Access <ArrowRight className="ml-1 h-4 w-4" />
+              <Link to="/signup">
+                Join Early Access (Limited Availability) <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-border bg-card/50">
-              Book a Demo
+            <Button asChild size="lg" variant="outline" className="border-border bg-card/50">
+              <Link to="/resources">Book a Demo</Link>
             </Button>
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary">
               <span className="relative flex h-1.5 w-1.5">
@@ -48,6 +53,10 @@ export const Hero = () => {
               </span>
               Limited early access available
             </div>
+          </div>
+
+          <div className="mt-5 max-w-md">
+            <EarlyAccessForm compact />
           </div>
 
           <div className="mt-7 flex items-center gap-3">
