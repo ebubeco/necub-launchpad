@@ -1,4 +1,5 @@
 import { Github, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 
 const stats = [
@@ -9,9 +10,9 @@ const stats = [
 ];
 
 const cols = [
-  { title: "Product", links: ["Overview", "Features", "Integrations", "Pricing"] },
-  { title: "Resources", links: ["Docs", "Blog", "Guides", "API Reference"] },
-  { title: "Company", links: ["About Us", "Careers", "Contact"] },
+  { title: "Product", links: [{ label: "Overview", to: "/product" }, { label: "Features", to: "/product" }, { label: "Pricing", to: "/pricing" }, { label: "Solutions", to: "/solutions" }] },
+  { title: "Resources", links: [{ label: "Docs", to: "/resources" }, { label: "Blog", to: "/resources" }, { label: "Guides", to: "/resources" }, { label: "Demo", to: "/resources" }] },
+  { title: "Company", links: [{ label: "About", to: "/company" }, { label: "Contact", to: "/resources" }, { label: "Sign in", to: "/signin" }] },
 ];
 
 export const StatsFooter = () => {
@@ -57,10 +58,10 @@ export const StatsFooter = () => {
               <div className="text-sm font-semibold">{c.title}</div>
               <ul className="mt-3 space-y-2">
                 {c.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-                      {l}
-                    </a>
+                  <li key={l.label}>
+                    <Link to={l.to} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
