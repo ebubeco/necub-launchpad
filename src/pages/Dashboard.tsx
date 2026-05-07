@@ -17,6 +17,12 @@ import {
   CheckCircle2,
   Loader2,
   Clock,
+  Server,
+  HardDrive,
+  Cpu,
+  Webhook,
+  Network,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/Logo";
