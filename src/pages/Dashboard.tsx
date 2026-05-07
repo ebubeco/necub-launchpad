@@ -17,6 +17,12 @@ import {
   CheckCircle2,
   Loader2,
   Clock,
+  Server,
+  HardDrive,
+  Cpu,
+  Webhook,
+  Network,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/Logo";
@@ -200,6 +206,9 @@ const Dashboard = () => {
                   Last login: {now.toLocaleString()} · Currently onboarding early teams and scaling
                   infrastructure to support increasing data workloads.
                 </p>
+                <p className="mt-2 max-w-3xl text-sm font-medium text-foreground/90">
+                  Processing high-volume datasets and scaling AI workloads across distributed cloud infrastructure.
+                </p>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm">
@@ -227,6 +236,109 @@ const Dashboard = () => {
                   <div className="mt-3 text-2xl font-semibold tracking-tight tabular-nums">{m.value}</div>
                 </div>
               ))}
+            </div>
+
+            {/* Pipeline Status + System Health */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="panel p-6 lg:col-span-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold">Pipeline Status</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Distributed compute fleet, ingestion queue & API surface.
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    </span>
+                    Operational
+                  </span>
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+                  {[
+                    { icon: Server, label: "Active Nodes", value: `${10 + (metrics.workflows % 5)}`, badge: "Synced" },
+                    { icon: Clock, label: "Queue Latency", value: `${Math.max(28, metrics.latency - 40)}ms`, badge: "Operational" },
+                    { icon: Cpu, label: "Jobs Running", value: `${12 + (metrics.jobs % 6)}`, badge: "Processing" },
+                    { icon: Globe, label: "API Uptime", value: "99.99%", badge: "Operational" },
+                    { icon: Radio, label: "Ingestion", value: "2.3K/min", badge: "Synced" },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded-lg border border-border/70 bg-muted/20 p-3">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <s.icon className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-[10px] uppercase tracking-widest">{s.label}</span>
+                      </div>
+                      <div className="mt-2 text-lg font-semibold tabular-nums">{s.value}</div>
+                      <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] text-emerald-400">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        {s.badge}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="panel p-6">
+                <h2 className="text-base font-semibold">System Health</h2>
+                <p className="mt-1 text-[11px] text-muted-foreground">Live utilization across the cluster.</p>
+                <div className="mt-4 space-y-4">
+                  {[
+                    { label: "Compute Load", value: 58 + (metrics.jobs % 18) },
+                    { label: "Storage Utilization", value: 42 + (metrics.events % 13) },
+                    { label: "Queue Activity", value: 30 + (metrics.latency % 25) },
+                    { label: "Active Workflows", value: 70 + ((metrics.workflows * 2) % 18) },
+                  ].map((h) => {
+                    const pct = Math.min(96, Math.max(8, h.value));
+                    return (
+                      <div key={h.label}>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">{h.label}</span>
+                          <span className="tabular-nums">{pct}%</span>
+                        </div>
+                        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-border">
+                          <div
+                            className="h-full bg-gradient-to-r from-primary to-primary-glow transition-all duration-700"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Integrations */}
+            <div className="panel p-6">
+              <div>
+                <h2 className="text-base font-semibold">Integrations</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Necub integrates with databases, APIs, and cloud storage systems to orchestrate scalable AI workflows.
+                </p>
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+                {[
+                  { icon: Database, name: "PostgreSQL", status: "Connected" },
+                  { icon: Network, name: "REST APIs", status: "Connected" },
+                  { icon: Cloud, name: "Cloud Storage", status: "Connected" },
+                  { icon: Webhook, name: "Webhooks", status: "Connected" },
+                  { icon: Radio, name: "Event Streams", status: "Streaming" },
+                ].map((i) => (
+                  <div key={i.name} className="flex items-center gap-3 rounded-lg border border-border/70 bg-muted/20 p-3">
+                    <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary">
+                      <i.icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-medium">{i.name}</div>
+                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        {i.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Processing pipeline */}
