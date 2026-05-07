@@ -32,6 +32,9 @@ export const Hero = () => {
             Necub helps teams automate workflows, process large-scale data, and make
             intelligent decisions using modern cloud architecture.
           </p>
+          <p className="mt-3 max-w-xl text-sm font-medium text-foreground/90">
+            Processing high-volume datasets and scaling AI workloads across cloud infrastructure.
+          </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <Button
