@@ -24,10 +24,35 @@ import {
   Network,
   Globe,
 } from "lucide-react";
+import {
+  BarChart3,
+  Brain,
+  GitBranch,
+  Layers,
+  PieChart,
+  Rocket,
+  ShieldCheck,
+  Timer,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/Logo";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+
+const operationalUseCases = [
+  { icon: Brain, title: "AI analytics pipelines", desc: "End-to-end model scoring on streaming data, persisted to your warehouse." },
+  { icon: Radio, title: "Real-time event processing", desc: "Sub-second ingestion from APIs, queues, and webhooks at scale." },
+  { icon: GitBranch, title: "Workflow orchestration", desc: "DAG-based scheduling with retries, fan-out, and dependency tracking." },
+  { icon: PieChart, title: "Business intelligence automation", desc: "Auto-refresh dashboards, KPI alerts, and scheduled reporting." },
+  { icon: Layers, title: "Distributed data ingestion", desc: "Multi-source replication into your lake with schema evolution." },
+];
+
+const seedDeployments = [
+  { name: "Workflow engine updated", status: "Success", minutesAgo: 4 },
+  { name: "Analytics pipeline deployed", status: "Success", minutesAgo: 22 },
+  { name: "Infrastructure sync completed", status: "Success", minutesAgo: 58 },
+  { name: "Processing node optimized", status: "Success", minutesAgo: 142 },
+];
 
 const sources = [
   { name: "Postgres — production", status: "Connected", icon: Database, throughput: "1.2k rows/s" },
@@ -85,6 +110,16 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const now = useNow();
   const [signups, setSignups] = useState<number | null>(null);
+  const isAdmin = user?.email === "admin@necub.ai";
+  const [lastSync, setLastSync] = useState(() => new Date());
+  const [workflows, setWorkflows] = useState(initialWorkflows);
+  const [infra, setInfra] = useState(() => ({
+    apiRequests: 184_320 + Math.floor(Math.random() * 4000),
+    integrations: 14,
+    throughput: 2.3,
+    storage: 62,
+    responseMs: 142,
+  }));
 
   // Live, slowly-incrementing metrics — dashboard "loads differently" each time
   const [metrics, setMetrics] = useState(() => ({
@@ -127,6 +162,24 @@ const Dashboard = () => {
         };
         return [next, ...prev].slice(0, 7);
       });
+      setInfra((p) => ({
+        apiRequests: p.apiRequests + Math.floor(40 + Math.random() * 180),
+        integrations: p.integrations,
+        throughput: Math.max(1.4, Math.min(4.2, p.throughput + (Math.random() - 0.5) * 0.2)),
+        storage: Math.max(48, Math.min(82, p.storage + (Math.random() > 0.5 ? 1 : -1))),
+        responseMs: Math.max(110, Math.min(190, p.responseMs + Math.floor((Math.random() - 0.5) * 8))),
+      }));
+      setWorkflows((ws) =>
+        ws.map((w, i) => {
+          if (Math.random() > 0.6) {
+            const order = ["Running", "Queued", "Completed"] as const;
+            const idx = order.indexOf(w.status as (typeof order)[number]);
+            return { ...w, status: order[(idx + 1) % order.length], runs: w.runs + Math.floor(Math.random() * 5) };
+          }
+          return { ...w, runs: w.runs + (i % 2) };
+        }),
+      );
+      setLastSync(new Date());
     }, 4000);
     return () => clearInterval(id);
   }, []);
@@ -182,7 +235,14 @@ const Dashboard = () => {
           <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-6 backdrop-blur-xl">
             <div>
               <div className="text-xs uppercase tracking-widest text-muted-foreground">Workspace</div>
-              <div className="text-sm font-semibold">{user?.email}</div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                {user?.email}
+                {isAdmin && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-primary">
+                    <ShieldCheck className="h-3 w-3" /> Administrator
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="hidden sm:inline-flex items-center gap-1.5">
@@ -192,6 +252,12 @@ const Dashboard = () => {
                 </span>
                 Live · {now.toLocaleTimeString()}
               </span>
+              <span className="hidden md:inline text-[11px]">
+                Last sync: {relTime(lastSync, now)}
+              </span>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/settings"><Settings className="mr-1 h-3.5 w-3.5" /> Settings</Link>
+              </Button>
               <Button variant="outline" size="sm" onClick={onLogout}>
                 <LogOut className="mr-1 h-3.5 w-3.5" /> Logout
               </Button>
@@ -238,7 +304,116 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Pipeline Status + System Health */}
+            {/* Infrastructure positioning */}
+            <div className="panel p-5 border-primary/20">
+              <p className="text-sm font-medium text-foreground/90">
+                Necub is designed to support scalable AI operations, distributed processing, and high-volume cloud-native workloads.
+              </p>
+            </div>
+
+            {/* API & Infrastructure Overview */}
+            {isAdmin && (
+              <div className="panel p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold">API & Infrastructure Overview</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Live operational telemetry across the Necub control plane.
+                    </p>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground">System health updated: just now</span>
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+                  {[
+                    { icon: Globe, label: "API requests today", value: fmt(infra.apiRequests), badge: "Healthy" },
+                    { icon: Network, label: "Active integrations", value: `${infra.integrations}`, badge: "Connected" },
+                    { icon: Cpu, label: "Throughput", value: `${infra.throughput.toFixed(1)}K/s`, badge: "Streaming" },
+                    { icon: HardDrive, label: "Storage utilization", value: `${infra.storage}%`, badge: "Nominal" },
+                    { icon: Timer, label: "Avg response time", value: `${infra.responseMs}ms`, badge: "Operational" },
+                  ].map((m) => (
+                    <div key={m.label} className="rounded-lg border border-border/70 bg-muted/20 p-3 transition-colors hover:border-primary/40">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <m.icon className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-[10px] uppercase tracking-widest">{m.label}</span>
+                      </div>
+                      <div className="mt-2 text-lg font-semibold tabular-nums">{m.value}</div>
+                      <div className="mt-2 h-1 overflow-hidden rounded-full bg-border">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-primary-glow transition-all duration-700"
+                          style={{ width: `${40 + (m.value.length * 7) % 55}%` }}
+                        />
+                      </div>
+                      <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] text-emerald-400">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        {m.badge}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Operational Use Cases */}
+            <div className="panel p-6">
+              <div>
+                <h2 className="text-base font-semibold">Operational Use Cases</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  How enterprise teams deploy Necub across their AI infrastructure.
+                </p>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {operationalUseCases.map((u) => (
+                  <div
+                    key={u.title}
+                    className="group rounded-lg border border-border/70 bg-muted/20 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-muted/30"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+                        <u.icon className="h-4 w-4" />
+                      </div>
+                      <div className="text-sm font-medium">{u.title}</div>
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{u.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Deployments */}
+            <div className="panel p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-semibold">Recent Deployments</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Continuous delivery across infrastructure services.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400">
+                  <Rocket className="h-3 w-3" /> Auto-deploy enabled
+                </span>
+              </div>
+              <ul className="mt-4 divide-y divide-border/60">
+                {seedDeployments.map((d) => (
+                  <li key={d.name} className="flex items-center justify-between py-3 text-sm animate-fade-up">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-7 w-7 place-items-center rounded-md bg-emerald-400/10 text-emerald-400">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-medium">{d.name}</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {relTime(new Date(now.getTime() - d.minutesAgo * 60_000), now)}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-emerald-400">
+                      {d.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <div className="panel p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
@@ -472,7 +647,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {initialWorkflows.map((w) => {
+                      {workflows.map((w) => {
                         const color =
                           w.status === "Running"
                             ? "text-emerald-400"
