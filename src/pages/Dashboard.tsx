@@ -304,7 +304,116 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Pipeline Status + System Health */}
+            {/* Infrastructure positioning */}
+            <div className="panel p-5 border-primary/20">
+              <p className="text-sm font-medium text-foreground/90">
+                Necub is designed to support scalable AI operations, distributed processing, and high-volume cloud-native workloads.
+              </p>
+            </div>
+
+            {/* API & Infrastructure Overview */}
+            {isAdmin && (
+              <div className="panel p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold">API & Infrastructure Overview</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Live operational telemetry across the Necub control plane.
+                    </p>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground">System health updated: just now</span>
+                </div>
+                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+                  {[
+                    { icon: Globe, label: "API requests today", value: fmt(infra.apiRequests), badge: "Healthy" },
+                    { icon: Network, label: "Active integrations", value: `${infra.integrations}`, badge: "Connected" },
+                    { icon: Cpu, label: "Throughput", value: `${infra.throughput.toFixed(1)}K/s`, badge: "Streaming" },
+                    { icon: HardDrive, label: "Storage utilization", value: `${infra.storage}%`, badge: "Nominal" },
+                    { icon: Timer, label: "Avg response time", value: `${infra.responseMs}ms`, badge: "Operational" },
+                  ].map((m) => (
+                    <div key={m.label} className="rounded-lg border border-border/70 bg-muted/20 p-3 transition-colors hover:border-primary/40">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <m.icon className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-[10px] uppercase tracking-widest">{m.label}</span>
+                      </div>
+                      <div className="mt-2 text-lg font-semibold tabular-nums">{m.value}</div>
+                      <div className="mt-2 h-1 overflow-hidden rounded-full bg-border">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-primary-glow transition-all duration-700"
+                          style={{ width: `${40 + (m.value.length * 7) % 55}%` }}
+                        />
+                      </div>
+                      <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-1.5 py-0.5 text-[10px] text-emerald-400">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        {m.badge}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Operational Use Cases */}
+            <div className="panel p-6">
+              <div>
+                <h2 className="text-base font-semibold">Operational Use Cases</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  How enterprise teams deploy Necub across their AI infrastructure.
+                </p>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {operationalUseCases.map((u) => (
+                  <div
+                    key={u.title}
+                    className="group rounded-lg border border-border/70 bg-muted/20 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-muted/30"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+                        <u.icon className="h-4 w-4" />
+                      </div>
+                      <div className="text-sm font-medium">{u.title}</div>
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{u.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Deployments */}
+            <div className="panel p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-semibold">Recent Deployments</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Continuous delivery across infrastructure services.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400">
+                  <Rocket className="h-3 w-3" /> Auto-deploy enabled
+                </span>
+              </div>
+              <ul className="mt-4 divide-y divide-border/60">
+                {seedDeployments.map((d) => (
+                  <li key={d.name} className="flex items-center justify-between py-3 text-sm animate-fade-up">
+                    <div className="flex items-center gap-3">
+                      <div className="grid h-7 w-7 place-items-center rounded-md bg-emerald-400/10 text-emerald-400">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <div className="font-medium">{d.name}</div>
+                        <div className="text-[11px] text-muted-foreground">
+                          {relTime(new Date(now.getTime() - d.minutesAgo * 60_000), now)}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-emerald-400">
+                      {d.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <div className="panel p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
