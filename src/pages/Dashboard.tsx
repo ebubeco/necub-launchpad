@@ -235,7 +235,14 @@ const Dashboard = () => {
           <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/60 bg-background/70 px-6 backdrop-blur-xl">
             <div>
               <div className="text-xs uppercase tracking-widest text-muted-foreground">Workspace</div>
-              <div className="text-sm font-semibold">{user?.email}</div>
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                {user?.email}
+                {isAdmin && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] uppercase tracking-widest text-primary">
+                    <ShieldCheck className="h-3 w-3" /> Administrator
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="hidden sm:inline-flex items-center gap-1.5">
@@ -245,6 +252,12 @@ const Dashboard = () => {
                 </span>
                 Live · {now.toLocaleTimeString()}
               </span>
+              <span className="hidden md:inline text-[11px]">
+                Last sync: {relTime(lastSync, now)}
+              </span>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/settings"><Settings className="mr-1 h-3.5 w-3.5" /> Settings</Link>
+              </Button>
               <Button variant="outline" size="sm" onClick={onLogout}>
                 <LogOut className="mr-1 h-3.5 w-3.5" /> Logout
               </Button>
