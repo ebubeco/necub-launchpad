@@ -47,6 +47,14 @@ const operationalUseCases = [
   { icon: Layers, title: "Distributed data ingestion", desc: "Multi-source replication into your lake with schema evolution." },
 ];
 
+const exampleWorkloads = [
+  { icon: BarChart3, title: "Processing customer analytics pipelines", desc: "Aggregating event streams into warehouse-ready feature tables.", status: "Running" },
+  { icon: Radio, title: "Synchronizing distributed event streams", desc: "Cross-region replication with exactly-once delivery guarantees.", status: "Streaming" },
+  { icon: PieChart, title: "Automating business intelligence workflows", desc: "Scheduled refreshes, KPI snapshots, and downstream notifications.", status: "Scheduled" },
+  { icon: Brain, title: "Scaling AI inference operations", desc: "Autoscaled model serving across a distributed GPU pool.", status: "Operational" },
+  { icon: GitBranch, title: "Real-time data orchestration", desc: "DAG execution coordinating ingest, transform, and inference stages.", status: "Running" },
+];
+
 const seedDeployments = [
   { name: "Workflow engine updated", status: "Success", minutesAgo: 4 },
   { name: "Analytics pipeline deployed", status: "Success", minutesAgo: 22 },
