@@ -647,7 +647,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {initialWorkflows.map((w) => {
+                      {workflows.map((w) => {
                         const color =
                           w.status === "Running"
                             ? "text-emerald-400"
