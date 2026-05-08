@@ -24,10 +24,35 @@ import {
   Network,
   Globe,
 } from "lucide-react";
+import {
+  BarChart3,
+  Brain,
+  GitBranch,
+  Layers,
+  PieChart,
+  Rocket,
+  ShieldCheck,
+  Timer,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/landing/Logo";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+
+const operationalUseCases = [
+  { icon: Brain, title: "AI analytics pipelines", desc: "End-to-end model scoring on streaming data, persisted to your warehouse." },
+  { icon: Radio, title: "Real-time event processing", desc: "Sub-second ingestion from APIs, queues, and webhooks at scale." },
+  { icon: GitBranch, title: "Workflow orchestration", desc: "DAG-based scheduling with retries, fan-out, and dependency tracking." },
+  { icon: PieChart, title: "Business intelligence automation", desc: "Auto-refresh dashboards, KPI alerts, and scheduled reporting." },
+  { icon: Layers, title: "Distributed data ingestion", desc: "Multi-source replication into your lake with schema evolution." },
+];
+
+const seedDeployments = [
+  { name: "Workflow engine updated", status: "Success", minutesAgo: 4 },
+  { name: "Analytics pipeline deployed", status: "Success", minutesAgo: 22 },
+  { name: "Infrastructure sync completed", status: "Success", minutesAgo: 58 },
+  { name: "Processing node optimized", status: "Success", minutesAgo: 142 },
+];
 
 const sources = [
   { name: "Postgres — production", status: "Connected", icon: Database, throughput: "1.2k rows/s" },
@@ -85,6 +110,16 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const now = useNow();
   const [signups, setSignups] = useState<number | null>(null);
+  const isAdmin = user?.email === "admin@necub.ai";
+  const [lastSync, setLastSync] = useState(() => new Date());
+  const [workflows, setWorkflows] = useState(initialWorkflows);
+  const [infra, setInfra] = useState(() => ({
+    apiRequests: 184_320 + Math.floor(Math.random() * 4000),
+    integrations: 14,
+    throughput: 2.3,
+    storage: 62,
+    responseMs: 142,
+  }));
 
   // Live, slowly-incrementing metrics — dashboard "loads differently" each time
   const [metrics, setMetrics] = useState(() => ({
@@ -127,6 +162,24 @@ const Dashboard = () => {
         };
         return [next, ...prev].slice(0, 7);
       });
+      setInfra((p) => ({
+        apiRequests: p.apiRequests + Math.floor(40 + Math.random() * 180),
+        integrations: p.integrations,
+        throughput: Math.max(1.4, Math.min(4.2, p.throughput + (Math.random() - 0.5) * 0.2)),
+        storage: Math.max(48, Math.min(82, p.storage + (Math.random() > 0.5 ? 1 : -1))),
+        responseMs: Math.max(110, Math.min(190, p.responseMs + Math.floor((Math.random() - 0.5) * 8))),
+      }));
+      setWorkflows((ws) =>
+        ws.map((w, i) => {
+          if (Math.random() > 0.6) {
+            const order = ["Running", "Queued", "Completed"] as const;
+            const idx = order.indexOf(w.status as (typeof order)[number]);
+            return { ...w, status: order[(idx + 1) % order.length], runs: w.runs + Math.floor(Math.random() * 5) };
+          }
+          return { ...w, runs: w.runs + (i % 2) };
+        }),
+      );
+      setLastSync(new Date());
     }, 4000);
     return () => clearInterval(id);
   }, []);
