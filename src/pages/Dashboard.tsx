@@ -387,7 +387,73 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Recent Deployments */}
+            {/* Example Workloads */}
+            <div className="panel p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-base font-semibold">Example Workloads</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Necub orchestrates AI workflows, real-time analytics, and distributed data processing across cloud-native infrastructure.
+                  </p>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  </span>
+                  All systems nominal
+                </span>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {exampleWorkloads.map((w) => {
+                  const tone =
+                    w.status === "Running" || w.status === "Streaming" || w.status === "Operational"
+                      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-400"
+                      : "border-amber-400/30 bg-amber-400/10 text-amber-400";
+                  return (
+                    <div
+                      key={w.title}
+                      className="group rounded-lg border border-border/70 bg-muted/20 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-muted/30 hover:shadow-[0_8px_24px_-12px_hsl(var(--primary)/0.4)]"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+                            <w.icon className="h-4 w-4" />
+                          </div>
+                          <div className="text-sm font-medium leading-tight">{w.title}</div>
+                        </div>
+                        <span className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] uppercase tracking-widest ${tone}`}>
+                          <span className="h-1 w-1 rounded-full bg-current animate-pulse" />
+                          {w.status}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{w.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+                {[
+                  { label: "Last infrastructure sync", value: relTime(lastSync, now) },
+                  { label: "Processing queue", value: `${12 + (metrics.jobs % 8)} active · healthy` },
+                  { label: "Realtime throughput", value: `${infra.throughput.toFixed(1)}K events/s` },
+                  { label: "Node health", value: `${10 + (metrics.workflows % 5)}/12 nominal` },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-lg border border-border/70 bg-muted/20 p-3">
+                    <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      </span>
+                      {s.label}
+                    </div>
+                    <div className="mt-2 text-sm font-semibold tabular-nums">{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+
             <div className="panel p-6">
               <div className="flex items-center justify-between">
                 <div>
