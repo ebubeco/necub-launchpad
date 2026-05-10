@@ -22,21 +22,33 @@ const SignUp = () => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
     setSuccess(false);
+    const trimmed = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }
     setLoading(true);
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(trimmed, password);
     if (!error) {
-      // also record interest in early access list (best-effort)
-      await supabase.from("early_access_emails").insert([{ email }]).then(() => {});
+      // best-effort early-access record; unique constraint handles duplicates
+      await supabase.from("early_access_emails").insert([{ email: trimmed }]).then(() => {});
     }
     setLoading(false);
-    if (error) setError(error);
-    else setSuccess(true);
+    if (error) {
+      const msg = error.toLowerCase();
+      if (msg.includes("registered") || msg.includes("already") || msg.includes("exists")) {
+        setError("This email is already registered. Please sign in instead.");
+      } else {
+        setError(error);
+      }
+    } else setSuccess(true);
   };
 
   return (
