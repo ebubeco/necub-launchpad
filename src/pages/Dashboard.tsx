@@ -284,7 +284,7 @@ const Dashboard = () => {
             </div>
           </header>
 
-          <div className="container-x py-8 space-y-8">
+          <div id="overview" className="container-x py-8 space-y-8 scroll-mt-20">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight">Welcome to Necub</h1>
