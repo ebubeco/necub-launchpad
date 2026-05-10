@@ -571,7 +571,7 @@ const Dashboard = () => {
             </div>
 
             {/* Integrations */}
-            <div className="panel p-6">
+            <div id="integrations" className="panel p-6 scroll-mt-20">
               <div>
                 <h2 className="text-base font-semibold">Integrations</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -645,7 +645,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Activity (live) */}
-              <div className="panel p-6 lg:col-span-2">
+              <div id="activity" className="panel p-6 lg:col-span-2 scroll-mt-20">
                 <div className="flex items-center justify-between">
                   <h2 className="text-base font-semibold">Recent activity</h2>
                   <span className="text-[11px] text-muted-foreground">Updated live</span>
@@ -716,7 +716,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Workflows */}
-              <div className="panel p-6 lg:col-span-2">
+              <div id="workflows" className="panel p-6 lg:col-span-2 scroll-mt-20">
                 <div className="flex items-center justify-between">
                   <h2 className="text-base font-semibold">Workflows</h2>
                   <Button size="sm" variant="outline">
