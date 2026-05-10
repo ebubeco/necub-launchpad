@@ -207,22 +207,34 @@ const Dashboard = () => {
           <div className="p-5"><Link to="/"><Logo /></Link></div>
           <nav className="px-3 space-y-1 text-sm">
             {[
-              { icon: LayoutDashboard, label: "Overview", active: true },
-              { icon: Workflow, label: "Workflows" },
-              { icon: Database, label: "Data Sources" },
-              { icon: Activity, label: "Activity" },
-              { icon: Users, label: "Team" },
-              { icon: Settings, label: "Settings" },
-            ].map((i) => (
-              <button
-                key={i.label}
-                className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left ${
-                  i.active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
-                }`}
-              >
-                <i.icon className="h-4 w-4" /> {i.label}
-              </button>
-            ))}
+              { icon: LayoutDashboard, label: "Overview", to: "#overview" },
+              { icon: Workflow, label: "Workflows", to: "#workflows" },
+              { icon: Database, label: "Data Sources", to: "#integrations" },
+              { icon: Activity, label: "Activity", to: "#activity" },
+              { icon: Settings, label: "Settings", to: "/settings", route: true },
+            ].map((i) =>
+              i.route ? (
+                <Link
+                  key={i.label}
+                  to={i.to}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                >
+                  <i.icon className="h-4 w-4" /> {i.label}
+                </Link>
+              ) : (
+                <a
+                  key={i.label}
+                  href={i.to}
+                  className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left ${
+                    i.label === "Overview"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                  }`}
+                >
+                  <i.icon className="h-4 w-4" /> {i.label}
+                </a>
+              ),
+            )}
           </nav>
           <div className="mt-6 mx-3 rounded-lg border border-border/60 bg-muted/20 p-3 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-2 text-foreground">
