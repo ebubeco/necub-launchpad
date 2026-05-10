@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index.tsx";
 import Product from "./pages/Product.tsx";
 import Solutions from "./pages/Solutions.tsx";
@@ -25,7 +26,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/product" element={<Product />} />
@@ -53,7 +55,8 @@ const App = () => (
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </AuthProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

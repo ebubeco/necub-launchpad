@@ -27,12 +27,21 @@ const SignIn = () => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (loading || demoLoading) return;
     setError("");
+    const trimmed = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setLoading(true);
-    const { error } = await signIn(email, password);
+    const { error } = await signIn(trimmed, password);
     setLoading(false);
-    if (error) setError(error);
-    else navigate("/dashboard", { replace: true });
+    if (error) {
+      const msg = error.toLowerCase();
+      if (msg.includes("invalid")) setError("Invalid email or password.");
+      else setError(error);
+    } else navigate("/dashboard", { replace: true });
   };
 
   const useDemo = async () => {

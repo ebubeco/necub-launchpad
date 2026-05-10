@@ -83,12 +83,12 @@ export const StatsFooter = () => {
             © {new Date().getFullYear()} Necub, Inc. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground">Privacy Policy</a>
-            <a href="#" className="hover:text-foreground">Terms of Service</a>
+            <Link to="/company" className="hover:text-foreground">Privacy Policy</Link>
+            <Link to="/company" className="hover:text-foreground">Terms of Service</Link>
             <span className="mx-1 h-4 w-px bg-border" />
-            <a href="#" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
-            <a href="#" aria-label="X" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
-            <a href="#" aria-label="GitHub" className="hover:text-foreground"><Github className="h-4 w-4" /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-4 w-4" /></a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:text-foreground"><Twitter className="h-4 w-4" /></a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-foreground"><Github className="h-4 w-4" /></a>
           </div>
         </div>
       </div>
