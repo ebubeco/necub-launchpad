@@ -10,7 +10,7 @@ import {
   LogOut,
   Plus,
   Settings,
-  Users,
+  // Users icon removed (Team nav item dropped)
   Workflow,
   Zap,
   Radio,
