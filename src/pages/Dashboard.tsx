@@ -147,15 +147,24 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    let mounted = true;
     supabase
       .from("early_access_emails")
       .select("*", { count: "exact", head: true })
-      .then(({ count }) => setSignups(count ?? null));
+      .then(({ count, error }) => {
+        if (!mounted || error) return;
+        setSignups(count ?? null);
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Live updates every 4s: bump metrics + push new activity item
   useEffect(() => {
+    let mounted = true;
     const id = setInterval(() => {
+      if (!mounted) return;
       setMetrics((m) => ({
         events: m.events + Math.floor(40 + Math.random() * 220),
         jobs: m.jobs + Math.floor(1 + Math.random() * 6),
@@ -164,7 +173,7 @@ const Dashboard = () => {
       }));
       setActivity((prev) => {
         const next = {
-          id: `${Date.now()}`,
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
           text: seedActivity[Math.floor(Math.random() * seedActivity.length)],
           at: new Date(),
         };
@@ -189,7 +198,10 @@ const Dashboard = () => {
       );
       setLastSync(new Date());
     }, 4000);
-    return () => clearInterval(id);
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
   }, []);
 
   const fmt = (n: number) => n.toLocaleString();
